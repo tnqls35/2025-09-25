@@ -10,19 +10,18 @@ option = st.radio('계산할 항목을 선택하세요', ['순열', '조합'])
 
 import itertools
 import random
-def draw_colored_circles(numbers, n_total=None):
-    fig, ax = plt.subplots(figsize=(len(numbers), 2))
-    # n_total이 주어지면, 전체 n개의 색상을 미리 지정
+def draw_colored_circles(numbers, n_total=None, size=0.28):
+    fig, ax = plt.subplots(figsize=(len(numbers)*size*2, size*3.2))
     if n_total is None:
         n_total = max(numbers)
     base_colors = plt.cm.get_cmap('tab20', n_total)
     color_map = {i+1: base_colors(i) for i in range(n_total)}
     for i, num in enumerate(numbers):
-        circle = plt.Circle((i+1, 1), 0.4, color=color_map[num], ec='black')
+        circle = plt.Circle((i+1, 1), size, color=color_map[num], ec='black', zorder=1)
         ax.add_patch(circle)
-        ax.text(i+1, 1, str(num), ha='center', va='center', fontsize=16, color='white')
+        ax.text(i+1, 1, str(num), ha='center', va='center', fontsize=int(size*30), color='white', zorder=2)
     ax.set_xlim(0, len(numbers)+1)
-    ax.set_ylim(0, 2)
+    ax.set_ylim(0.5, 1.5)
     ax.axis('off')
     st.pyplot(fig)
 
@@ -39,10 +38,14 @@ if option == '순열':
             st.success(f'서로 다른 {n}개 중 {r}개를 나열하는 경우의 수: {result}')
             perms = list(itertools.permutations(range(n), r))
             st.markdown('**모든 순열 리스트**')
-            for i, perm in enumerate(perms, 1):
-                nums = [j+1 for j in perm]
-                st.write(f'{i}:')
-                draw_colored_circles(nums, n_total=n)
+            for i in range(0, len(perms), 3):
+                cols = st.columns(3)
+                for j in range(3):
+                    if i + j < len(perms):
+                        nums = [k+1 for k in perms[i+j]]
+                        with cols[j]:
+                            st.write(f'{i+j+1}:')
+                            draw_colored_circles(nums, n_total=n, size=0.28)
 
 elif option == '조합':
     st.markdown('**서로 다른 n개 중 r개를 뽑습니다.**')
@@ -57,7 +60,11 @@ elif option == '조합':
             st.success(f'서로 다른 {n}개 중 {r}개를 뽑는 경우의 수: {result}')
             combs = list(itertools.combinations(range(n), r))
             st.markdown('**모든 조합 리스트**')
-            for i, comb in enumerate(combs, 1):
-                nums = [j+1 for j in comb]
-                st.write(f'{i}:')
-                draw_colored_circles(nums, n_total=n)
+            for i in range(0, len(combs), 3):
+                cols = st.columns(3)
+                for j in range(3):
+                    if i + j < len(combs):
+                        nums = [k+1 for k in combs[i+j]]
+                        with cols[j]:
+                            st.write(f'{i+j+1}:')
+                            draw_colored_circles(nums, n_total=n, size=0.28)
