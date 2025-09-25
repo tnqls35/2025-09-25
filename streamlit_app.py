@@ -17,9 +17,11 @@ def draw_colored_circles(numbers, n_total=None, size=0.28):
     base_colors = plt.cm.get_cmap('tab20', n_total)
     color_map = {i+1: base_colors(i) for i in range(n_total)}
     for i, num in enumerate(numbers):
-        circle = plt.Circle((i+1, 1), size, color=color_map[num], ec='black', zorder=1)
+        # 완전한 원: 중심에서 테두리까지 거리가 모두 같음 (plt.Circle 사용)
+        circle = plt.Circle((i+1, 1), size, color=color_map[num], ec='black', lw=2, zorder=1)
         ax.add_patch(circle)
         ax.text(i+1, 1, str(num), ha='center', va='center', fontsize=int(size*30), color='white', zorder=2)
+    ax.set_aspect('equal', adjustable='datalim')  # 원이 찌그러지지 않도록 비율 고정
     ax.set_xlim(0, len(numbers)+1)
     ax.set_ylim(0.5, 1.5)
     ax.axis('off')
